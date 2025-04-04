@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Julian Casalez / SECTION 001
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -152,7 +152,23 @@ class PriorityQueue<E, P> {
     public Node add(E e, P priority) {
 
         // YOUR CODE GOES HERE
-        return null;
+        Node newNode = new Node(e, priority, DEFAULT_CAPACITY);
+
+        tree.add(newNode);
+        int currentIndex = tree.size() - 1;
+
+        while (currentIndex > 0) {
+            int parentIndex = (currentIndex - 1) / 2;
+            Node parentNode = tree.get(parentIndex);
+
+            if (compare(newNode.priority, parentNode.priority) < 0) {
+                swap(currentIndex, parentIndex);
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+        return newNode;
     }
 
 
@@ -169,6 +185,11 @@ class PriorityQueue<E, P> {
     public boolean contains(E e) {
 
         // ADD YOUR CODE HERE
+       for (Node node : tree){
+        if (node.value.equals(e) && node.isValid()) {
+            return true;
+        }
+       }
         return false;
     }
 
