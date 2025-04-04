@@ -1,7 +1,7 @@
 
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Julian Casalez / SECTION 001
  *
  *   This java file contains the problem solutions for the methods lastBoulder,
  *   showDuplicates, and pair methods. You should utilize the Java Collection
@@ -10,7 +10,6 @@
  ********************************************************************/
 
 import java.util.*;
-import java.util.PriorityQueue;
 
 public class ProblemSolutions {
 
@@ -68,8 +67,34 @@ public class ProblemSolutions {
       //
       // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME / SECTION # ABOVE
       //
-      return -1;
+      java.util.PriorityQueue<Integer> pq = new java.util.PriorityQueue<>(Collections.reverseOrder()); // Create a max heap
+        
+      // If there are no boulders, return 0
+      if (boulders.length == 0) {
+          return 0;
+      }
+
+      // Add all boulders into the max heap
+      for (int boulder : boulders) {
+          pq.add(boulder);
+      }
+
+      // Continue smashing the heaviest two boulders until one or none are left
+      while (pq.size() > 1) {
+          int xBoulder = pq.poll();  // Heaviest boulder
+          int yBoulder = pq.poll();  // Second heaviest boulder
+          
+          // If the two boulders have different weights, push the difference back to the heap
+          if (xBoulder != yBoulder) {
+              pq.add(xBoulder - yBoulder);
+          }
+      }
+      
+      // If there's one boulder left, return its weight, otherwise return 0
+      return pq.isEmpty() ? 0 : pq.peek();
   }
+
+  
 
 
     /**
@@ -94,7 +119,21 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure result is sorted in ascending order
+
+        ArrayList<String> dupeList = new ArrayList<String>();
+
+        HashMap<String, Integer> map = new HashMap<>(); // Create a HashMap to store the count of each string
+        for (String str : input) {
+         map.put(str, map.getOrDefault(str, 0) + 1); // Increment the count for each string
+        }
+
+        for (String str : map.keySet()){
+            if (map.get(str) > 1) { // If the count is greater than 1, it's a duplicate
+                dupeList.add(str); // Add to the duplicate list
+            }
+        }
+        Collections.sort(dupeList); // Sort the duplicate list in ascending order
+        return dupeList;  // Make sure result is sorted in ascending order
 
     }
 
@@ -134,6 +173,33 @@ public class ProblemSolutions {
         //
         //  YOUR CODE GOES HERE
         //
-        return new ArrayList<>();  // Make sure returned lists is sorted as indicated above
+
+        ArrayList<String> pairs = new ArrayList<>(); // List to store the pairs
+        HashSet<Integer> seen = new HashSet<>(); // Set to store the numbers we have seen
+        HashSet<Integer> added = new HashSet<>(); // Set to store the numbers we have added to pairs
+
+        for (int num: input){
+            int complement = k- num;
+
+            if (seen.contains(complement)){
+                int smallest = Math.min(num, complement);
+                int largest = Math.max(num, complement);
+                String pairString = "(" + smallest + ", " + largest + ")"; // Create the pair string
+
+                if (!added.contains(smallest) && !added.contains(largest)) { // Check if the pair has already been added
+                    pairs.add(pairString); // Add the pair to the list
+                    added.add(smallest); // Mark the numbers as added
+                    added.add(largest);
+                }
+
+
+            }
+
+            seen.add(num);
+        }
+
+        Collections.sort(pairs); // Sort the pairs in ascending order
+
+        return pairs;  // Make sure returned lists is sorted as indicated above
     }
 }
